@@ -34,7 +34,7 @@ class SBUSReceiver:
         self.SBUS_FRAME_LEN = 25
         self.SBUS_NUM_CHAN = 16
         self.OUT_OF_SYNC_THD = 10
-        self.SBUS_NUM_CHANNELS = 18
+        self.SBUS_NUM_CHANNELS = 16
         self.SBUS_SIGNAL_OK = 0
         self.SBUS_SIGNAL_LOST = 1
         self.SBUS_SIGNAL_FAILSAFE = 2
