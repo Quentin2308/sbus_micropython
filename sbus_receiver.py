@@ -47,7 +47,7 @@ class SBUSReceiver:
         self.outOfSyncCounter = 0
         self.sbusBuff = bytearray(1)  # single byte used for sync
         self.sbusFrame = bytearray(25)  # single SBUS Frame
-        self.sbusChannels = array.array('H', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])  # RC Channels
+        self.sbusChannels = array.array('H', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])  # RC Channels
         self.isSync = False
         self.startByteFound = False
         self.failSafeStatus = self.SBUS_SIGNAL_FAILSAFE
@@ -90,7 +90,7 @@ class SBUSReceiver:
     def decode_frame(self):
 
         # TODO: DoubleCheck if it has to be removed
-        for i in range(0, self.SBUS_NUM_CHANNELS - 2):
+        for i in range(0, self.SBUS_NUM_CHANNELS):
             self.sbusChannels[i] = 0
 
         # counters initialization
@@ -114,20 +114,6 @@ class SBUSReceiver:
                 bit_in_channel = 0
                 ch += 1
 
-        # Decode Digitals Channels
-
-        # Digital Channel 1
-        if self.sbusFrame[self.SBUS_FRAME_LEN - 2] & (1 << 0):
-            self.sbusChannels[self.SBUS_NUM_CHAN - 2] = 1
-        else:
-            self.sbusChannels[self.SBUS_NUM_CHAN - 2] = 0
-
-        # Digital Channel 2
-        if self.sbusFrame[self.SBUS_FRAME_LEN - 2] & (1 << 1):
-            self.sbusChannels[self.SBUS_NUM_CHAN - 1] = 1
-        else:
-            self.sbusChannels[self.SBUS_NUM_CHAN - 1] = 0
-
         # Failsafe
         self.failSafeStatus = self.SBUS_SIGNAL_OK
         if self.sbusFrame[self.SBUS_FRAME_LEN - 2] & (1 << 2):
@@ -137,21 +123,23 @@ class SBUSReceiver:
 
     def get_sync(self):
 
-        if self.sbus.any() > 0:
+        if self.sbus.input_waiting() > 0:
 
             if self.startByteFound:
                 if self.frameIndex == (self.SBUS_FRAME_LEN - 1):
-                    self.sbus.readinto(self.sbusBuff, 1)  # end of frame byte
+                    self.sbusBuff = self.sbus.read(1)  # end of frame byte !!! a changer 
                     if self.sbusBuff[0] == 0:  # TODO: Change to use constant var value
                         self.startByteFound = False
                         self.isSync = True
                         self.frameIndex = 0
                 else:
-                    self.sbus.readinto(self.sbusBuff, 1)  # keep reading 1 byte until the end of frame
+                    self.sbusBuff = self.sbus.read(1)
+                    #self.sbus.readinto(self.sbusBuff, 1)  # keep reading 1 byte until the end of frame
                     self.frameIndex += 1
             else:
                 self.frameIndex = 0
-                self.sbus.readinto(self.sbusBuff, 1)  # read 1 byte
+                self.sbusBuff = self.sbus.read(1)
+                #self.sbus.readinto(self.sbusBuff, 1)  # read 1 byte
                 if self.sbusBuff[0] == 15:  # TODO: Change to use constant var value
                     self.startByteFound = True
                     self.frameIndex += 1
@@ -164,8 +152,9 @@ class SBUSReceiver:
         """
 
         if self.isSync:
-            if self.sbus.any() >= self.SBUS_FRAME_LEN:
-                self.sbus.readinto(self.sbusFrame, self.SBUS_FRAME_LEN)  # read the whole frame
+            if self.sbus.input_waiting() >= self.SBUS_FRAME_LEN:
+                self.sbusFrame = self.sbus.read(self.SBUS_FRAME_LEN)
+                #self.sbus.readinto(self.sbusFrame, self.SBUS_FRAME_LEN)  # read the whole frame
                 if (self.sbusFrame[0] == 15 and self.sbusFrame[
                         self.SBUS_FRAME_LEN - 1] == 0):  # TODO: Change to use constant var value
                     self.validSbusFrame += 1
