@@ -18,20 +18,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from pyb import UART
+from periphery import Serial
 import array
 
 
 class SBUSReceiver:
-    def __init__(self, uart_port):
-        self.sbus = UART(uart_port, 100000)
-        self.sbus.init(100000, bits=8, parity=0, stop=2, timeout_char=3, read_buf_len=250)
+    def __init__(self):
+        self.sbus = Serial("/dev/ttyS1", 100000, databits=8, parity="even", stopbits=2)
+        self.read_buf_len = 250
+        #self.sbus.init(100000, bits=8, parity=0, stop=2, timeout_char=3, read_buf_len=250)
 
         # constants
         self.START_BYTE = b'0f'
         self.END_BYTE = b'00'
         self.SBUS_FRAME_LEN = 25
-        self.SBUS_NUM_CHAN = 18
+        self.SBUS_NUM_CHAN = 16
         self.OUT_OF_SYNC_THD = 10
         self.SBUS_NUM_CHANNELS = 18
         self.SBUS_SIGNAL_OK = 0
