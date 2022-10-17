@@ -18,7 +18,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import pyb
+import threading
+import periphery
 from sbus_receiver import SBUSReceiver
 
 
@@ -40,9 +41,9 @@ led = pyb.LED(4)
 sbus = SBUSReceiver()
 
 # Init Rx Timing at 300us (Frsky specific)
-x = threading.Thread(target=update_rx_data, args=(1,))
-x.start()
-timRx = pyb.Timer(2)
+#x = threading.Thread(target=update_rx_data, args=(1,))
+#x.start()
+timRx = threading.Timer()
 timRx.init(freq=2778)
 timRx.callback(update_rx_data)
 
