@@ -54,7 +54,8 @@ tim1 = threading.Timer(1, status_led)
 tim1.start()
 
 while True:
-
+    sbus.get_failsafe_status()
+    sbus.get_rx_report()
     if update_rx:
         sbus.get_new_data()
         update_rx = False
