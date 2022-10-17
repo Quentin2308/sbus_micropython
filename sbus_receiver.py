@@ -24,7 +24,7 @@ import array
 
 class SBUSReceiver:
     def __init__(self):
-        self.sbus = Serial("/dev/ttyS1", 100000, databits=8, parity="even", stopbits=2)
+        self.sbus = Serial("/dev/ttyS1", 115200, databits=8, parity="even", stopbits=2)
         self.read_buf_len = 250
         #self.sbus.init(100000, bits=8, parity=0, stop=2, timeout_char=3, read_buf_len=250)
 
