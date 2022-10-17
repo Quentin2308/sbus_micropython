@@ -43,7 +43,7 @@ sbus = SBUSReceiver()
 # Init Rx Timing at 300us (Frsky specific)
 #x = threading.Thread(target=update_rx_data, args=(1,))
 #x.start()
-t=1/2778
+t=10*(10**(-6))
 timRx = threading.Timer(t, update_rx_data)
 #timRx.init(freq=2778)
 #timRx.callback(update_rx_data)
