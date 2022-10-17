@@ -19,7 +19,7 @@ THE SOFTWARE.
 """
 
 import pyb
-from receiver.sbus_receiver import SBUSReceiver
+from sbus_receiver import SBUSReceiver
 
 
 def update_rx_data(timRx):
@@ -36,10 +36,12 @@ updateLed = False
 update_rx = False
 led = pyb.LED(4)
 
-# Init the SBUS driver on UART port 3
-sbus = SBUSReceiver(3)
+# Init the SBUS driver on UART port serie 1
+sbus = SBUSReceiver()
 
 # Init Rx Timing at 300us (Frsky specific)
+x = threading.Thread(target=update_rx_data, args=(1,))
+x.start()
 timRx = pyb.Timer(2)
 timRx.init(freq=2778)
 timRx.callback(update_rx_data)
