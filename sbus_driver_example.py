@@ -43,14 +43,15 @@ sbus = SBUSReceiver()
 # Init Rx Timing at 300us (Frsky specific)
 #x = threading.Thread(target=update_rx_data, args=(1,))
 #x.start()
-timRx = threading.Timer()
-timRx.init(freq=2778)
-timRx.callback(update_rx_data)
+t=1/2778
+timRx = threading.Timer(t, update_rx_data)
+#timRx.init(freq=2778)
+#timRx.callback(update_rx_data)
+timRx.start()
 
 # Init Timer for status led (1 sec interval)
-tim1 = pyb.Timer(1)
-tim1.init(freq=1)
-tim1.callback(status_led)
+tim1 = threading.Timer(1, status_led)
+tim1.start()
 
 while True:
 
