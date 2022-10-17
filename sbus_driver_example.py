@@ -31,7 +31,7 @@ def update_rx_data():
 def status_led():
     global updateLed
     updateLed = True
-    led.toggle()
+    #led.toggle()
 
 updateLed = False
 update_rx = False
