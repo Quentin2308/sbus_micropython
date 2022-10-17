@@ -23,19 +23,19 @@ import periphery
 from sbus_receiver import SBUSReceiver
 
 
-def update_rx_data(timRx):
+def update_rx_data():
     global update_rx
     update_rx = True
 
 
-def status_led(tim1):
+def status_led():
     global updateLed
     updateLed = True
     led.toggle()
 
 updateLed = False
 update_rx = False
-led = pyb.LED(4)
+#led = pyb.LED(4)
 
 # Init the SBUS driver on UART port serie 1
 sbus = SBUSReceiver()
